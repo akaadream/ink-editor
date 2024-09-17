@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "baklavajs": "^2.4.5",
     "inkjs": "^2.3.0",
     "material-icons": "^1.13.12",
     "pinia": "^2.2.2",

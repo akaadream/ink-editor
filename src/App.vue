@@ -1,37 +1,57 @@
 <script setup lang="ts">
-import Icon from './components/Icon.vue';
+import { BaklavaEditor, BaklavaInterfaceTypes, Commands, Components, useBaklava } from 'baklavajs';
+import "@baklavajs/themes/dist/syrup-dark.css";
+import "./editor-theme.css";
 import Menu from './navigation/Menu.vue';
+import EndNode from './nodes/EndNode';
+import DialogNode from './nodes/DialogNode';
+import ChoiceNode from './nodes/ChoiceNode';
+import DivertNode from './nodes/DivertNode';
+import IfNode from './nodes/IfNode';
+import KnotNode from './nodes/KnotNode';
+import { booleanType, cycleType, numberType, stringType } from './nodes/nodes-types';
+import StringNode from './nodes/StringNode';
+import BooleanNode from './nodes/BooleanNode';
+import ChoicesNode from './nodes/ChoicesNode';
 
-const showContextMenu = () => {
+const baklava = useBaklava();
 
-}
+const nodeInterfaceTypes = new BaklavaInterfaceTypes(baklava.editor, {
+    viewPlugin: baklava
+});
+nodeInterfaceTypes.addTypes(stringType, numberType, booleanType, cycleType);
+
+// baklava.settings.contextMenu.additionalItems = [
+//     { label: "Edit", submenu: [
+//         { label: "Copy", command: Commands.COPY_COMMAND },
+//         { label: "Cut", command: Commands.COPY_COMMAND },
+//         { label: "Paste", command: Commands.COPY_COMMAND },
+//     ] },
+//     { isDivider: true },
+//     { label: "Create a sub graph", command: Commands.CREATE_SUBGRAPH_COMMAND },
+// ];
+
+baklava.editor.registerNodeType(StringNode, { category: "Variables" });
+baklava.editor.registerNodeType(BooleanNode, { category: "Variables" });
+
+baklava.editor.registerNodeType(DivertNode, { category: "Flow" });
+baklava.editor.registerNodeType(KnotNode, { category: "Flow" });
+baklava.editor.registerNodeType(ChoiceNode, { category: "Flow" });
+baklava.editor.registerNodeType(ChoicesNode, { category: "Flow" });
+baklava.editor.registerNodeType(EndNode, { category: "Flow" });
+baklava.editor.registerNodeType(IfNode, { category: "Conditionnal" });
+baklava.editor.registerNodeType(DialogNode);
+
+baklava.settings.displayValueOnHover = true;
+baklava.settings.nodes.resizable = true;
+baklava.settings.toolbar.enabled = true;
+baklava.settings.background.gridSize = 64;
+baklava.settings.palette.enabled = false;
 </script>
 
 <template>
     <Menu />
-    <div id="editor" @contextmenu.prevent="showContextMenu">
-        <div class="editor-background"></div>
-    </div>
-
-    <div class="context-menu">
-        <div class="context-menu-item">
-            <Icon name="add_circle" /> Create a node
-        </div>
-
-        <div class="context-menu-separator"></div>
-
-        <div class="context-menu-item">
-            <Icon name="content_cut" /> Cut
-        </div>
-
-        <div class="context-menu-item">
-            <Icon name="content_copy" /> Copy
-        </div>
-
-        <div class="context-menu-item">
-            <Icon name="content_paste" /> Paste
-        </div>
-    </div>
+    <BaklavaEditor :view-model="baklava" />
 </template>
 
 <style scoped>
@@ -55,6 +75,9 @@ const showContextMenu = () => {
     position: absolute;
     flex-direction: column;
     align-items: flex-start;
+
+    top: 200px;
+    left: 100px;
 
     z-index: 1000;
     user-select: none;
